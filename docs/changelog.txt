@@ -1,0 +1,23 @@
+<p><strong>xTracy</strong> replaces the XOOPS error page with Tracy while you are working on a site. Instead of a generic failure page you get the line that threw, the source around it, the call stack that led there, and the state of the request -- plus Tracy's debug bar on every page. It shows only to an authenticated webmaster in a group you have permitted, costs one function call when it is off, and has no front end. For developers; not for a live site.</p>
+
+<h5>1.0.0-Beta1 [2026-08-08]</h5>  Dev: XOOPS 2.7.3, PHP 8.5
+<hr>
+First release. xTracy hands PHP's error and exception handlers to tracy/tracy through the error-screen provider seam introduced in XOOPS 2.7.3. Before that seam existed, Tracy was activated by the core itself - roughly 190 lines naming a third-party library, shipped to every XOOPS install whether or not the site owner had ever heard of it. This module is where that code belongs.
+
+<strong>Added</strong>
+- Answers core.debug.errorscreen for the owner token "xtracy", the module's own dirname, so 'error_screen' => 'xtracy' names the directory to go and look in. The older spelling "tracy" from 2.7.3 development builds is still answered.
+- Claims the error screen at install and releases it at uninstall, so with 'error_screen' => 'auto' - the shipped default - installing the module is the whole setup. Deactivating does NOT release the seat, so switching the module off for an afternoon leaves the setup intact.
+- Takes the screen from a holder that is gone or inactive, on update. Core refuses an ordinary claim while another provider still holds it.
+- Reports its outcome in every branch, including the ones where it decides not to register: active, disabled with the reason, missing, incompatible, error. Core publishes it as XOOPS_ERROR_SCREEN_STATUS and XOOPS_ERROR_SCREEN_MESSAGE. A provider that registers silently is worse than one that does nothing.
+- Enforces the use_xtracy permission alongside core's developer-request gate. The two answer different questions, so a site can withhold Tracy from an administrator who would otherwise qualify.
+- Admin pages: Home, Permissions, About, plus multi-page help.
+- Defines XOOPS_TRACY_STATUS and XOOPS_TRACY_MESSAGE for DebugBar 1.4.0 and earlier, which read them directly. Deprecated.
+
+<strong>Security</strong>
+- Registers only for an authenticated member of the webmaster group. Tracy's BlueScreen exposes source, paths, superglobals and environment; the previous in-core implementation checked only that debugging was on, which made it the loosest test in the stack.
+- Refuses to hand Tracy a log directory that does not exist or is not writable. Debugger::enable() registers its handlers before validating the path and then throws, so its own handler ends the request and a try/catch cannot save it. A site with no xoops_data/logs lost every page.
+- Registration is now the LAST thing activation does: the strict_mode / show_bar / log_severity assignments moved in front of Debugger::enable(), which is where Tracy takes the handlers. Anything throwing after enable() would leave Tracy holding them while this module reports 'error' - and since the failure is caught here, core's catch never runs. Core hands the two handlers back on an 'error' report, but a shutdown function cannot be unregistered by anybody.
+- Screens the Tracy source for a #[\Deprecated] attribute on a property before autoloading. PHP 8.4+ rejects it, and a compile-time attribute error cannot be caught. Reported as incompatible.
+
+<strong>Requirements</strong>
+- XOOPS 2.7.3+ (hard floor; installation also tests for xoops_activateErrorScreen(), because a version number cannot express a capability), PHP 8.2+, and tracy/tracy installed into xoops_lib/vendor with: composer require tracy/tracy

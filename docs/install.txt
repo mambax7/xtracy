@@ -1,0 +1,138 @@
+xTracy — installation
+=====================
+
+WHAT THIS IS, AND WHY YOU WOULD WANT IT
+
+  xTracy replaces the XOOPS error page with Tracy while you are working on a
+  site.
+
+  The default error page tells you that something failed.  Tracy tells you which
+  line failed, in which file, called from where, and what the request looked like
+  at the time -- on one screen, with the source around the failure and the full
+  call stack.  It also puts Tracy's debug bar at the foot of every page.
+
+  In practice that means:
+
+    - no guess-and-reload loop; the value you were about to var_dump is already
+      on the screen
+    - a call stack you can click through, frame by frame, with the code for each
+    - the request beside the error: parameters, session, constants, included
+      files
+    - your SQL too, if XoopsLogger is enabled -- usually where the answer is
+    - bdump() sends a value to the debug bar instead of into your page, so
+      inspecting a variable does not wreck the layout you are building
+
+  It cannot leak to your visitors.  Tracy shows source, paths and superglobals,
+  so this module registers only for an authenticated member of the webmaster
+  group, and only for groups you have granted permission.  Everyone else gets
+  ordinary XOOPS error handling, on the same site, at the same time.
+
+  With no provider installed it costs one function call during the boot.  There
+  is no front end and no database table.
+
+  For developers working on a XOOPS site or module.  Not for a live site.
+
+  A worked walkthrough -- install, switch on, break something, read the result --
+  is in docs/TUTORIAL.md.
+
+
+REQUIREMENTS
+
+  XOOPS 2.7.3 or later.  This is a hard requirement, not a recommendation.  The
+  whole module is an answer to the core's core.debug.errorscreen event, so on an
+  older core it would install and then do nothing at all.  Installation checks
+  for the event itself and refuses with an explanation if the core does not
+  provide it -- a version number cannot express a capability, and the seam landed
+  during 2.7.3's own development, so even a 2.7.3 install may predate it.
+
+  PHP 8.2 or later.
+
+  The Tracy library, which this module does not ship.
+
+
+1. INSTALL THE LIBRARY
+
+  Tracy lives with the site's other libraries, not inside this module:
+
+      cd xoops_lib
+      composer require tracy/tracy
+
+  You should end up with xoops_lib/vendor/tracy/tracy.  The module finds it
+  without being told where to look, and also checks class/libraries/vendor for
+  older layouts.
+
+
+2. INSTALL THE MODULE
+
+  - extract the distribution archive into your site's modules directory
+  - rename the new directory to  xtracy
+  - install it from Administration -> Modules
+
+  On success it reports that it now owns the error screen.  If another
+  error-screen module (xWhoops, say) was installed first, it says so and leaves
+  that one alone -- nothing is ever taken silently.
+
+
+3. GRANT THE PERMISSION
+
+  Administration -> xTracy -> Permissions, and select the groups allowed to see
+  Tracy.  Webmasters are the usual answer.  Nobody outside these groups will see
+  a Tracy screen regardless of any other setting.
+
+
+4. ENABLE THE FILE-BASED DEBUG CONFIGURATION
+
+  If xoops_data/data/debug.php does not exist yet, copy the template beside it:
+
+      cp xoops_data/data/debug.dist.php xoops_data/data/debug.php
+
+  and make sure of one line:
+
+      'enabled' => true,
+
+  That is all that is required.  'error_screen' ships as 'auto', meaning "the
+  first error-screen module installed", and installing this module recorded it
+  as that owner.
+
+  Admin -> Preferences -> Debug Mode does NOT activate the error screen, and
+  this is deliberate: writing a file on the server is a stronger credential than
+  holding an admin session, and handing PHP's error handlers to a third-party
+  library asks for the stronger one.  With the module installed but no
+  debug.php, XOOPS reports the status 'dormant' and says why.
+
+
+VERIFYING
+
+  Load any page as a member of a permitted group; Tracy's debug bar should
+  appear.  If it does not, the site says why rather than leaving you guessing --
+  XOOPS publishes these on every request:
+
+      XOOPS_ERROR_SCREEN_OWNER     which module owns the screen, or 'core'
+      XOOPS_ERROR_SCREEN_SOURCE    config | recorded | default
+      XOOPS_ERROR_SCREEN_STATUS    what actually happened
+      XOOPS_ERROR_SCREEN_MESSAGE   a sentence explaining that status
+
+  docs/TUTORIAL.md has a table of every status and what to do about it.
+
+
+UNINSTALLING
+
+  Uninstall from Administration -> Modules.  That releases the recorded
+  ownership; the site falls back to core error handling.
+
+  If xoops_data/data is not writable, the uninstall still succeeds but the
+  release fails, and the uninstaller warns about it.  In that case make the
+  directory writable and remove the error_screen_owner entry from
+  xoops_data/data/debug-runtime.json by hand.
+
+  Deactivating does NOT release it, on purpose: a module switched off for an
+  afternoon should find its setup intact when it is switched back on.  While it
+  is off the status reads 'unclaimed', and no other installed provider is
+  promoted into the free seat -- ownership only changes when somebody asks.
+
+
+BEFORE GOING LIVE
+
+  Delete xoops_data/data/debug.php, or set 'enabled' => false.  Nothing here can
+  reach an anonymous visitor even if you forget, but a live site has no reason
+  to carry a debug configuration.

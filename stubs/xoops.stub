@@ -1,0 +1,270 @@
+<?php
+
+/**
+ * PHPStan stub — XOOPS core classes — XOOPS module DevOps baseline.
+ *
+ * Minimal signatures so static analysis understands the most common XOOPS APIs
+ * a module touches, WITHOUT a full XOOPS runtime on the analysis path. This is a
+ * stub: bodies are intentionally empty and only types/signatures matter.
+ *
+ * Bracketed namespaces are used so global-namespace core classes and the Xmf\*
+ * helper classes can coexist in one file.
+ *
+ * Extend per-module if you call core methods not listed here.
+ *
+ * xoops-overlay:profile=core27
+ */
+
+namespace {
+    class XoopsObject
+    {
+        /** @var array<string,mixed> */
+        public array $vars = [];
+
+        public function getVar(string $key, string $format = 's'): mixed {}
+
+        public function setVar(string $key, mixed $value, bool $not_gpc = false): void {}
+
+        /** @param array<string,mixed> $var */
+        public function setVars(array $var): void {}
+
+        /** @return array<string,mixed> */
+        public function getValues(): array {}
+
+        public function isNew(): bool {}
+
+        public function setNew(): void {}
+
+        public function unsetNew(): void {}
+
+        public function isDirty(): bool {}
+
+        /** @return array<int,string> */
+        public function getErrors(): array {}
+
+        public function getHtmlErrors(): string {}
+
+        public function cleanVars(): bool {}
+    }
+
+    class CriteriaElement
+    {
+        public function render(): string {}
+
+        public function renderWhere(): string {}
+    }
+
+    class Criteria extends CriteriaElement
+    {
+        public function __construct(string $column, mixed $value = '', string $operator = '=', string $prefix = '', string $function = '') {}
+
+        public function setSort(string $sort): void {}
+
+        public function getSort(): string {}
+
+        public function setOrder(string $order): void {}
+
+        public function getOrder(): string {}
+
+        public function setLimit(int $limit = 0): void {}
+
+        public function getLimit(): int {}
+
+        public function setStart(int $start = 0): void {}
+
+        public function getStart(): int {}
+
+        public function setGroupby(string $group): void {}
+    }
+
+    class CriteriaCompo extends CriteriaElement
+    {
+        public function __construct(?CriteriaElement $ele = null, string $signe = 'AND') {}
+
+        public function add(CriteriaElement $criteriaElement, string $signe = 'AND'): void {}
+    }
+
+    class XoopsDatabase
+    {
+        public function prefix(string $table = ''): string {}
+
+        public function quoteString(string $str): string {}
+
+        public function quote(string $str): string {}
+
+        public function escape(string $str): string {}
+
+        public function query(string $sql, int $limit = 0, int $start = 0): mixed {}
+
+        public function queryF(string $sql, int $limit = 0, int $start = 0): mixed {}
+
+        /** @return array<int|string,mixed>|false */
+        public function fetchArray(mixed $result): array|false {}
+
+        /** @return array<int|string,mixed>|false */
+        public function fetchRow(mixed $result): array|false {}
+
+        public function getRowsNum(mixed $result): int {}
+
+        public function getInsertId(): int {}
+
+        public function getAffectedRows(): int {}
+
+        public function error(): string {}
+
+        public function errno(): int {}
+    }
+
+    class XoopsMySQLDatabase extends XoopsDatabase {}
+
+    class XoopsPersistableObjectHandler
+    {
+        public function __construct(?XoopsDatabase $db = null, string $table = '', string $className = '', string $keyName = '', string $identifierName = '') {}
+
+        public function create(bool $isNew = true): XoopsObject {}
+
+        public function get(mixed $id, mixed $fields = null): ?XoopsObject {}
+
+        public function insert(XoopsObject $object, bool $force = false): bool {}
+
+        public function delete(XoopsObject $object, bool $force = false): bool {}
+
+        /**
+         * @param  CriteriaElement|null $criteria
+         * @return array<int|string,XoopsObject>
+         */
+        public function getAll(?CriteriaElement $criteria = null, mixed $fields = null, bool $asObject = true, bool $id_as_key = true): array {}
+
+        /**
+         * @param  CriteriaElement|null $criteria
+         * @return array<int|string,XoopsObject>
+         */
+        public function getObjects(?CriteriaElement $criteria = null, bool $id_as_key = false, bool $as_object = true): array {}
+
+        public function getCount(?CriteriaElement $criteria = null): int {}
+
+        public function deleteAll(?CriteriaElement $criteria = null, bool $force = true, bool $asObject = false): bool {}
+
+        /** @return array<int|string,mixed> */
+        public function getList(?CriteriaElement $criteria = null, int $limit = 0, int $start = 0): array {}
+    }
+
+    class XoopsObjectHandler
+    {
+        public function __construct(?XoopsDatabase $db = null) {}
+    }
+
+    class XoopsModule extends XoopsObject
+    {
+        public function getInfo(string $name = ''): mixed {}
+
+        public function dirname(): string {}
+
+        public static function getByDirname(string $dirname): ?XoopsModule {}
+
+        public function isactive(): int {}
+
+        /** Queues a message shown on the module install/update/uninstall report page. */
+        public function setMessage(string $str): void {}
+    }
+
+    class XoopsModuleHandler extends XoopsPersistableObjectHandler
+    {
+        public function getByDirname(string $dirname): ?XoopsModule {}
+    }
+
+    class XoopsUser extends XoopsObject
+    {
+        public function isAdmin(?int $module_id = null): bool {}
+
+        public function uid(): int {}
+
+        /** @return array<int,int> */
+        public function getGroups(): array {}
+    }
+
+    class XoopsPreloadItem
+    {
+        public function __construct() {}
+    }
+
+    // ---------------------------------------------------------------- global functions
+
+    function xoops_getHandler(string $name, bool $optional = false): mixed {}
+
+    function redirect_header(string $url, int $time = 3, string $message = '', bool $addredirect = true, bool $allowExternalLink = false): void {}
+
+    // The XOOPS 2.7.3 error-screen ownership API, published by include/debugconfig.php.
+    //
+    // Listed here because analysis has no booted core to discover them in, NOT because
+    // they are optional: the module still guards every call with function_exists() so it
+    // runs unchanged on 2.7.2, and the stub must not be read as permission to drop that.
+
+    function xoops_recordErrorScreenOwner(string $dirname, bool $force = false): bool {}
+
+    function xoops_getRecordedErrorScreenOwner(): string {}
+
+    function xoops_releaseErrorScreenOwner(string $dirname): bool {}
+
+    // The rest of the 2.7.3 debug seam this provider reads. Same rule as above: listed so
+    // analysis can see them, NOT a licence to drop the function_exists() guard each call site
+    // still carries so the module runs unchanged on a core that predates the seam.
+
+    function xoops_activateErrorScreen(): bool {}
+
+    /** @return array<string,mixed> */
+    function xoops_getDebugConfig(): array {}
+
+    /** @return array<string,mixed> */
+    function xoops_readDebugRuntimeOverride(): array {}
+
+    function xoops_findVendorDirectory(): string {}
+}
+
+namespace Xmf {
+    class Request
+    {
+        public static function getString(string $name, string $default = '', string $hash = 'default', int $mask = 0): string {}
+
+        public static function getInt(string $name, int $default = 0, string $hash = 'default', int $mask = 0): int {}
+
+        public static function getBool(string $name, bool $default = false, string $hash = 'default'): bool {}
+
+        /** @return array<mixed> */
+        public static function getArray(string $name, array $default = [], string $hash = 'default', int $mask = 0): array {}
+
+        public static function getCmd(string $name, string $default = '', string $hash = 'default', int $mask = 0): string {}
+
+        public static function getMethod(): string {}
+
+        public static function getVar(string $name, mixed $default = null, string $hash = 'default', string $type = 'none', int $mask = 0): mixed {}
+    }
+}
+
+namespace Xmf\Module {
+    class Helper
+    {
+        public static function getHelper(string $dirname): \Xmf\Module\Helper\AbstractHelper {}
+    }
+}
+
+namespace Xmf\Module\Helper {
+    abstract class AbstractHelper
+    {
+        public function getHandler(string $name): \XoopsPersistableObjectHandler {}
+
+        public function getModule(): \XoopsModule {}
+
+        public function getConfig(string $name, mixed $default = null): mixed {}
+
+        public function isUserAdmin(): bool {}
+
+        public function url(string $url = ''): string {}
+
+        public function path(string $path = ''): string {}
+
+        public function getCurrentPage(): string {}
+
+        public function addLog(string $log): void {}
+    }
+}

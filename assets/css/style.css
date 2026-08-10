@@ -1,0 +1,8 @@
+/*
+ * xTracy module stylesheet.
+ *
+ * Intentionally minimal: the module's UI is Tracy's own BlueScreen and debug bar,
+ * which ship their styling inside the Tracy library. Admin pages use the admin
+ * theme's styles. Add module-specific rules here if the module ever renders
+ * front-end markup of its own.
+ */
