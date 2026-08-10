@@ -53,6 +53,14 @@ parameters:
     ignoreErrors:
         # XOOPS injects these as superglobals at runtime; analysis can't see the assignment.
         - '#Variable \$xoops(DB|User|Module|ModuleConfig|Tpl|Security|Config|Logger|Option) might not be defined#'
+        # admin/permissions.php loads a XOOPS core file (class/xoopsformloader.php) at runtime.
+        # It lives in the core tree, not this module, so phpstan's require-file existence check
+        # cannot see it and reports it as missing. Matched by identifier + path (never the
+        # resolved absolute path, which differs per OS) so the ignore holds on Linux CI too --
+        # a baseline entry cannot, because it pins the machine-specific path in its message.
+        -
+            identifier: requireOnce.fileNotFound
+            path: admin/permissions.php
 
     parallel:
         maximumNumberOfProcesses: 4
