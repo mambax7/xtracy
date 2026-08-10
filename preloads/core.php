@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * xtracy — Tracy error screen provider for XOOPS 2.7.3+
  *
@@ -61,13 +61,12 @@ class XtracyCorePreload extends XoopsPreloadItem
 
     /**
      * @param array $args ['owner' => string]
-     * @return void
      */
-    public static function eventCoreDebugErrorscreen($args)
+    public static function eventCoreDebugErrorscreen(array $args): void
     {
         // Not our token. Another provider will answer, or core will report 'unclaimed'.
         $owner = (string) ($args['owner'] ?? '');
-        if (self::OWNER !== $owner && !in_array($owner, self::LEGACY_OWNERS, true)) {
+        if (self::OWNER !== $owner && ! in_array($owner, self::LEGACY_OWNERS, true)) {
             return;
         }
 
@@ -76,7 +75,7 @@ class XtracyCorePreload extends XoopsPreloadItem
         // does nothing: the constants would describe a screen nobody is showing. Fail
         // closed on a core whose seam does not match this module's.
         $report = $args['report'] ?? null;
-        if (!is_callable($report)) {
+        if (! is_callable($report)) {
             return;
         }
 
@@ -107,30 +106,30 @@ class XtracyCorePreload extends XoopsPreloadItem
      */
     private static function hasModulePermission()
     {
-        if (!class_exists('\\Xmf\\Module\\Helper\\Permission')) {
+        if (! class_exists(\Xmf\Module\Helper\Permission::class)) {
             return false;
         }
 
         $permissionHelper = new \Xmf\Module\Helper\Permission(self::OWNER);
 
-        return (bool) $permissionHelper->checkPermission(self::PERMISSION_NAME, self::PERMISSION_ITEM_ID, false);
+        return $permissionHelper->checkPermission(self::PERMISSION_NAME, self::PERMISSION_ITEM_ID, false);
     }
 
     /**
      * Work out what should happen to Tracy, and do it.
      *
-     * @param string|null $message          set to the human explanation for the status
+     * @param string      $message          set to the human explanation for the status
      * @param bool        $developerRequest core's answer to xoops_isDeveloperRequest()
      * @return string active | disabled | missing | incompatible | error
      */
-    private static function resolve(&$message, $developerRequest)
+    private static function resolve(string &$message, bool $developerRequest): string
     {
         // Tracy renders a toolbar and, on failure, a BlueScreen carrying source excerpts,
         // file paths, superglobals and environment. In Development mode it shows those to
         // whoever is looking. Core passes its answer in the event and does not enforce it,
         // because a provider may legitimately render a production-safe page; one that
         // exposes internals, as this one does, must refuse.
-        if (!$developerRequest) {
+        if (! $developerRequest) {
             $message = 'Tracy is dormant: this request is not from an authenticated site administrator.';
 
             return 'disabled';
@@ -142,7 +141,7 @@ class XtracyCorePreload extends XoopsPreloadItem
         // group xTracy" -- so a site can withhold Tracy from an administrator who would
         // otherwise qualify. Unchecked, the Permissions page would be decorative: it would
         // save a setting nothing ever read.
-        if (!self::hasModulePermission()) {
+        if (! self::hasModulePermission()) {
             $message = 'Tracy is dormant: the use_xtracy permission is not granted to this user.';
 
             return 'disabled';
@@ -182,7 +181,7 @@ class XtracyCorePreload extends XoopsPreloadItem
         $vendor = function_exists('xoops_findVendorDirectory') ? xoops_findVendorDirectory() : '';
         $installed = '' !== $vendor && is_dir($vendor . '/tracy/tracy');
 
-        if (!$installed && !class_exists('\\Tracy\\Debugger')) {
+        if (! $installed && ! class_exists(\Tracy\Debugger::class)) {
             if (true === $wanted) {
                 $message = 'Tracy is enabled in debug.php but tracy/tracy is not installed.';
 
@@ -201,7 +200,10 @@ class XtracyCorePreload extends XoopsPreloadItem
             $vendor . '/tracy/tracy/src/Tracy/Debugger/Debugger.php',
             $vendor . '/tracy/tracy/src/Tracy/Debugger.php',
         ] as $sourceFile) {
-            if ('' === $vendor || !is_readable($sourceFile)) {
+            if ('' === $vendor) {
+                continue;
+            }
+            if (! is_readable($sourceFile)) {
                 continue;
             }
             $source = file_get_contents($sourceFile);
@@ -214,18 +216,18 @@ class XtracyCorePreload extends XoopsPreloadItem
             }
         }
 
-        if (!class_exists('\\Tracy\\Debugger')) {
+        if (! class_exists(\Tracy\Debugger::class)) {
             // The bootstrap does not itself require the Composer autoloader, and on a
             // site with no module supplying one this is the only chance to get it.
             if ('' !== $vendor && is_readable($vendor . '/autoload.php')) {
                 include_once $vendor . '/autoload.php';
             }
-            if (!class_exists('\\Tracy\\Debugger') && '' !== $vendor && is_readable($vendor . '/tracy/tracy/src/tracy.php')) {
+            if (! class_exists(\Tracy\Debugger::class) && '' !== $vendor && is_readable($vendor . '/tracy/tracy/src/tracy.php')) {
                 include_once $vendor . '/tracy/tracy/src/tracy.php';
             }
         }
 
-        if (!class_exists('\\Tracy\\Debugger')) {
+        if (! class_exists(\Tracy\Debugger::class)) {
             $message = 'tracy/tracy is present on disk but Tracy\\Debugger could not be autoloaded.';
 
             return 'missing';
@@ -242,7 +244,7 @@ class XtracyCorePreload extends XoopsPreloadItem
         // cannot save this; the only defence is not handing it a bad path. A site whose
         // xoops_data/logs is absent (a fresh checkout, a deploy that skipped the writable
         // directories) would otherwise get a fatal on the last line of every page.
-        if ('' !== $logDirectory && !(is_dir($logDirectory) && is_writable($logDirectory))) {
+        if ('' !== $logDirectory && (! is_dir($logDirectory) || ! is_writable($logDirectory))) {
             $logDirectory = '';
         }
 

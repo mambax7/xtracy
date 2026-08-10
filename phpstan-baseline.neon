@@ -1,0 +1,193 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Call to static method getInstance\(\) on an unknown class Xmf\\Module\\Admin\.$#'
+			identifier: class.notFound
+			count: 1
+			path: admin/about.php
+
+		-
+			message: '#^Function xoops_cp_footer not found\.$#'
+			identifier: function.notFound
+			count: 1
+			path: admin/admin_footer.php
+
+		-
+			message: '#^Call to static method load\(\) on an unknown class Xmf\\Language\.$#'
+			identifier: class.notFound
+			count: 1
+			path: admin/admin_header.php
+
+		-
+			message: '#^Function xoops_cp_header not found\.$#'
+			identifier: function.notFound
+			count: 1
+			path: admin/admin_header.php
+
+		-
+			message: '#^Call to static method getInstance\(\) on an unknown class Xmf\\Module\\Admin\.$#'
+			identifier: class.notFound
+			count: 1
+			path: admin/index.php
+
+		-
+			message: '#^Call to static method load\(\) on an unknown class Xmf\\Language\.$#'
+			identifier: class.notFound
+			count: 2
+			path: admin/menu.php
+
+		-
+			message: '#^Constant _MI_XTRACY_ABOUT not found\.$#'
+			identifier: constant.notFound
+			count: 1
+			path: admin/menu.php
+
+		-
+			message: '#^Constant _MI_XTRACY_HOME not found\.$#'
+			identifier: constant.notFound
+			count: 1
+			path: admin/menu.php
+
+		-
+			message: '#^Constant _MI_XTRACY_PERMISSIONS not found\.$#'
+			identifier: constant.notFound
+			count: 1
+			path: admin/menu.php
+
+		-
+			message: '#^Call to method addElement\(\) on an unknown class XoopsThemeForm\.$#'
+			identifier: class.notFound
+			count: 2
+			path: admin/permissions.php
+
+		-
+			message: '#^Call to method defaultFieldName\(\) on an unknown class Xmf\\Module\\Helper\\Permission\.$#'
+			identifier: class.notFound
+			count: 1
+			path: admin/permissions.php
+
+		-
+			message: '#^Call to method getGroupSelectFormForItem\(\) on an unknown class Xmf\\Module\\Helper\\Permission\.$#'
+			identifier: class.notFound
+			count: 1
+			path: admin/permissions.php
+
+		-
+			message: '#^Call to method render\(\) on an unknown class XoopsThemeForm\.$#'
+			identifier: class.notFound
+			count: 1
+			path: admin/permissions.php
+
+		-
+			message: '#^Call to method savePermissionForItem\(\) on an unknown class Xmf\\Module\\Helper\\Permission\.$#'
+			identifier: class.notFound
+			count: 1
+			path: admin/permissions.php
+
+		-
+			message: '#^Call to static method getInstance\(\) on an unknown class Xmf\\Module\\Admin\.$#'
+			identifier: class.notFound
+			count: 1
+			path: admin/permissions.php
+
+		-
+			message: '#^Constant _MA_XTRACY_FORM_PROCESSED not found\.$#'
+			identifier: constant.notFound
+			count: 1
+			path: admin/permissions.php
+
+		-
+			message: '#^Constant _MA_XTRACY_FORM_SUBMIT not found\.$#'
+			identifier: constant.notFound
+			count: 1
+			path: admin/permissions.php
+
+		-
+			message: '#^Constant _MA_XTRACY_PERMISSION_FORM not found\.$#'
+			identifier: constant.notFound
+			count: 2
+			path: admin/permissions.php
+
+		-
+			message: '#^Constant _MA_XTRACY_PERMISSION_GROUPS not found\.$#'
+			identifier: constant.notFound
+			count: 1
+			path: admin/permissions.php
+
+		-
+			message: '#^If condition is always true\.$#'
+			identifier: if.alwaysTrue
+			count: 1
+			path: admin/permissions.php
+
+		-
+			message: '#^Instantiated class Xmf\\Module\\Helper\\Permission not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: admin/permissions.php
+
+		-
+			message: '#^Instantiated class XoopsFormButton not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: admin/permissions.php
+
+		-
+			message: '#^Instantiated class XoopsThemeForm not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: admin/permissions.php
+
+		-
+			message: '#^Call to an undefined method XoopsModule\:\:setErrors\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: include/install.php
+
+		-
+			message: '#^Casting to string something that''s already string\.$#'
+			identifier: cast.useless
+			count: 2
+			path: include/install.php
+
+		-
+			message: '#^Method XtracyCorePreload\:\:eventCoreDebugErrorscreen\(\) has parameter \$args with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: preloads/core.php
+
+		-
+			message: '#^Constant _MI_XTRACY_DESC not found\.$#'
+			identifier: constant.notFound
+			count: 1
+			path: xoops_version.php
+
+		-
+			message: '#^Constant _MI_XTRACY_DISCLAIMER not found\.$#'
+			identifier: constant.notFound
+			count: 1
+			path: xoops_version.php
+
+		-
+			message: '#^Constant _MI_XTRACY_LICENSE not found\.$#'
+			identifier: constant.notFound
+			count: 1
+			path: xoops_version.php
+
+		-
+			message: '#^Constant _MI_XTRACY_NAME not found\.$#'
+			identifier: constant.notFound
+			count: 1
+			path: xoops_version.php
+
+		-
+			message: '#^Constant _MI_XTRACY_OVERVIEW not found\.$#'
+			identifier: constant.notFound
+			count: 1
+			path: xoops_version.php
+
+		-
+			message: '#^Constant _MI_XTRACY_SUPPORT not found\.$#'
+			identifier: constant.notFound
+			count: 1
+			path: xoops_version.php

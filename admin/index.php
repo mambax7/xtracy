@@ -11,7 +11,6 @@
  */
 
 use Xmf\Module\Admin;
-use Xmf\Request;
 
 /**
  * @copyright 2000-2026 XOOPS Project (https://xoops.org)

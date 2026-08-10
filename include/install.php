@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * xtracy install / uninstall hooks.
  *
@@ -21,11 +21,10 @@ defined('XOOPS_ROOT_PATH') || exit('Restricted access');
  * @param string $dirname     this module's dirname
  * @param bool   $onlyIfEmpty when true, grant only when no group is set yet, so an update
  *                            re-asserting the grant never clobbers a site's own narrowing
- * @return void
  */
-function xtracy_grant_permission_to_admins($dirname, $onlyIfEmpty = false)
+function xtracy_grant_permission_to_admins($dirname, $onlyIfEmpty = false): void
 {
-    if (!class_exists('\\Xmf\\Module\\Helper\\Permission')) {
+    if (! class_exists(\Xmf\Module\Helper\Permission::class)) {
         return;
     }
 
@@ -58,7 +57,7 @@ function xtracy_grant_permission_to_admins($dirname, $onlyIfEmpty = false)
  * @param XoopsModule $module
  * @return bool false to abort the installation
  */
-function xoops_module_pre_install_xtracy($module)
+function xoops_module_pre_install_xtracy($module): bool
 {
     if (function_exists('xoops_activateErrorScreen')) {
         return true;
@@ -88,9 +87,9 @@ function xoops_module_pre_install_xtracy($module)
  * @param XoopsModule $module
  * @return bool true — installation succeeds either way
  */
-function xoops_module_install_xtracy($module)
+function xoops_module_install_xtracy($module): bool
 {
-    if (!function_exists('xoops_recordErrorScreenOwner')) {
+    if (! function_exists('xoops_recordErrorScreenOwner')) {
         return true;
     }
 
@@ -155,9 +154,9 @@ function xoops_module_install_xtracy($module)
  * @param XoopsModule $module
  * @return bool true — the update itself succeeds either way
  */
-function xoops_module_update_xtracy($module)
+function xoops_module_update_xtracy($module): bool
 {
-    if (!function_exists('xoops_recordErrorScreenOwner')) {
+    if (! function_exists('xoops_recordErrorScreenOwner')) {
         return true;
     }
 
@@ -186,7 +185,7 @@ function xoops_module_update_xtracy($module)
     // Fail CLOSED: an object we cannot read the state of is treated as ACTIVE, so a
     // transfer never force-steals a seat from a holder that might still be running.
     // Prefer isactive(); fall back to the raw var; refuse the steal if neither is legible.
-    if (!is_object($holder)) {
+    if (! is_object($holder)) {
         $holderIsRunning = false;
     } elseif (method_exists($holder, 'isactive')) {
         $holderIsRunning = (bool) $holder->isactive();
@@ -232,12 +231,11 @@ function xoops_module_update_xtracy($module)
  * in any case.
  *
  * @param XoopsModule $module
- * @return bool
  */
-function xoops_module_uninstall_xtracy($module)
+function xoops_module_uninstall_xtracy($module): bool
 {
     if (function_exists('xoops_releaseErrorScreenOwner')
-        && !xoops_releaseErrorScreenOwner($module->getVar('dirname', 'n'))) {
+        && ! xoops_releaseErrorScreenOwner($module->getVar('dirname', 'n'))) {
         // Uninstalling still succeeds -- refusing to uninstall over an unwritable data
         // directory would be worse -- but the stale record has to be said out loud, or the
         // site sits at 'unclaimed' naming a module that is no longer there.
