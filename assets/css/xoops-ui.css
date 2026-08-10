@@ -1,0 +1,73 @@
+/**
+ * Shared Glidebook / XOOPS UI primitives (Phase L).
+ * Modules may import this or rely on local style.css that mirrors tokens.
+ */
+:root {
+  --gb-surface: #fff;
+  --gb-ink: #1a1a1a;
+  --gb-muted: #6b7280;
+  --gb-primary: #2563eb;
+  --gb-danger: #dc2626;
+  --gb-warning: #d97706;
+  --gb-success: #16a34a;
+  --gb-border: #e5e7eb;
+  --gb-radius: 8px;
+  --gb-shadow: 0 1px 2px rgba(0,0,0,.06);
+  --gb-focus: 0 0 0 3px rgba(37,99,235,.35);
+}
+
+.gb-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  padding: .15rem .55rem;
+  border-radius: 999px;
+  font-size: .85em;
+  font-weight: 600;
+  border: 1px solid var(--gb-border);
+  background: #f9fafb;
+  color: var(--gb-ink);
+}
+.gb-pill--ok { background: #ecfdf5; border-color: #a7f3d0; color: #065f46; }
+.gb-pill--ok::before { content: "✓"; }
+.gb-pill--warn { background: #fffbeb; border-color: #fde68a; color: #92400e; }
+.gb-pill--warn::before { content: "!"; }
+.gb-pill--err { background: #fef2f2; border-color: #fecaca; color: #991b1b; }
+.gb-pill--err::before { content: "×"; }
+.gb-pill--info { background: #eff6ff; border-color: #bfdbfe; color: #1e40af; }
+.gb-pill--info::before { content: "i"; }
+
+.gb-tabs { display: flex; flex-wrap: wrap; gap: .5rem; border-bottom: 1px solid var(--gb-border); margin-bottom: 1rem; }
+.gb-tabs a, .gb-tabs button {
+  appearance: none; background: transparent; border: 0; border-bottom: 2px solid transparent;
+  padding: .5rem .75rem; cursor: pointer; color: var(--gb-muted); text-decoration: none;
+}
+.gb-tabs a.is-active, .gb-tabs button.is-active,
+.gb-tabs a[aria-selected="true"], .gb-tabs button[aria-selected="true"] {
+  color: var(--gb-primary); border-bottom-color: var(--gb-primary); font-weight: 600;
+}
+.gb-tab-panel[hidden] { display: none; }
+
+.gb-timeline { list-style: none; margin: 0; padding: 0; border-left: 2px solid var(--gb-border); }
+.gb-timeline li { position: relative; padding: 0 0 1rem 1.25rem; }
+.gb-timeline li::before {
+  content: ""; position: absolute; left: -5px; top: .35rem; width: 8px; height: 8px;
+  border-radius: 50%; background: var(--gb-primary);
+}
+
+.gb-stat { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: .75rem; }
+.gb-stat__card {
+  background: var(--gb-surface); border: 1px solid var(--gb-border); border-radius: var(--gb-radius);
+  padding: 1rem; box-shadow: var(--gb-shadow);
+}
+.gb-stat__label { color: var(--gb-muted); font-size: .85em; }
+.gb-stat__value { font-size: 1.5rem; font-weight: 700; margin-top: .25rem; }
+
+.gb-meter {
+  height: .65rem; background: #f3f4f6; border-radius: 999px; overflow: hidden;
+  border: 1px solid var(--gb-border);
+}
+.gb-meter > span { display: block; height: 100%; background: var(--gb-primary); }
+.gb-meter--ok > span { background: var(--gb-success); }
+.gb-meter--warn > span { background: var(--gb-warning); }
+.gb-meter--err > span { background: var(--gb-danger); }
