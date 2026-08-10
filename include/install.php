@@ -11,6 +11,40 @@
 defined('XOOPS_ROOT_PATH') || exit('Restricted access');
 
 /**
+ * Grant the module's use_xtracy permission to the webmaster group.
+ *
+ * A provider that installs with the permission granted to nobody is dormant with no visible
+ * cause -- the developer gate passes but the module's own check refuses everyone. Granting
+ * the webmaster group on install is the normal XOOPS permission contract; the site narrows
+ * it under Permissions if it wants to.
+ *
+ * @param string $dirname     this module's dirname
+ * @param bool   $onlyIfEmpty when true, grant only when no group is set yet, so an update
+ *                            re-asserting the grant never clobbers a site's own narrowing
+ * @return void
+ */
+function xtracy_grant_permission_to_admins($dirname, $onlyIfEmpty = false)
+{
+    if (!class_exists('\\Xmf\\Module\\Helper\\Permission')) {
+        return;
+    }
+
+    $permission = new \Xmf\Module\Helper\Permission((string) $dirname);
+    $adminGroup = defined('XOOPS_GROUP_ADMIN') ? (int) constant('XOOPS_GROUP_ADMIN') : 1;
+
+    if ($onlyIfEmpty && method_exists($permission, 'getGroupsForItem')) {
+        $existing = $permission->getGroupsForItem('use_xtracy', 0);
+        if (is_array($existing) && [] !== $existing) {
+            return;
+        }
+    }
+
+    if (method_exists($permission, 'savePermissionForItem')) {
+        $permission->savePermissionForItem('use_xtracy', 0, [$adminGroup]);
+    }
+}
+
+/**
  * Refuse to install on a core that does not fire core.debug.errorscreen.
  *
  * min_xoops cannot express this. The seam arrived DURING 2.7.3's development, so a
@@ -63,22 +97,30 @@ function xoops_module_install_xtracy($module)
     $dirname = $module->getVar('dirname', 'n');
 
     if (xoops_recordErrorScreenOwner($dirname)) {
+        // Grant the module's own permission to the webmaster group on install, so an
+        // administrator can see the screen without a separate trip to Permissions. Without
+        // this the module installs granted to nobody and stays dormant with no hint why. A
+        // site can narrow it afterwards under Permissions.
+        xtracy_grant_permission_to_admins($dirname);
+
         // The second sentence is not decoration. The error screen activates under the
         // file-based debug configuration only, so on a site running Admin -> Preferences
         // -> Debug Mode alone this module is recorded and dormant -- and an install
         // message that said only "this module now owns the error screen" would be making
         // a promise that site will never see kept.
         $module->setMessage(
-            'This module now owns the error screen. It takes effect once '
-            . 'xoops_data/data/debug.php exists and is enabled — Admin → Preferences → '
-            . 'Debug Mode alone does not activate it. Install the library with: '
-            . 'composer require tracy/tracy'
+            'This module now owns the error screen, and the webmaster group may see it. It '
+            . 'takes effect once xoops_data/data/debug.php exists and is enabled — Admin → '
+            . 'Preferences → Debug Mode alone does not activate it. Install the library '
+            . 'with: composer require tracy/tracy'
         );
 
         return true;
     }
 
-    $held = htmlspecialchars(xoops_getRecordedErrorScreenOwner(), ENT_QUOTES);
+    $held = function_exists('xoops_getRecordedErrorScreenOwner')
+        ? htmlspecialchars((string) xoops_getRecordedErrorScreenOwner(), ENT_QUOTES)
+        : '';
 
     // All three routes below work, and they are listed in the order of least disruption.
     //
@@ -120,12 +162,17 @@ function xoops_module_update_xtracy($module)
     }
 
     $dirname = $module->getVar('dirname', 'n');
-    $held = xoops_getRecordedErrorScreenOwner();
+    $held = function_exists('xoops_getRecordedErrorScreenOwner')
+        ? (string) xoops_getRecordedErrorScreenOwner()
+        : '';
 
     if ('' === $held || $held === $dirname) {
         // Free, or already ours. An ordinary claim covers both, and recording again is
         // how a module that was uninstalled-and-reinstalled elsewhere gets the seat back.
         xoops_recordErrorScreenOwner($dirname);
+        // Re-assert the webmaster grant for a site that installed a version predating it;
+        // only when nothing is set yet, so a site's own narrowing is never clobbered.
+        xtracy_grant_permission_to_admins($dirname, true);
 
         return true;
     }
@@ -136,9 +183,18 @@ function xoops_module_update_xtracy($module)
         $holder = $handler->getByDirname($held);
     }
 
-    $holderIsRunning = is_object($holder)
-        && method_exists($holder, 'isactive')
-        && (bool) $holder->isactive();
+    // Fail CLOSED: an object we cannot read the state of is treated as ACTIVE, so a
+    // transfer never force-steals a seat from a holder that might still be running.
+    // Prefer isactive(); fall back to the raw var; refuse the steal if neither is legible.
+    if (!is_object($holder)) {
+        $holderIsRunning = false;
+    } elseif (method_exists($holder, 'isactive')) {
+        $holderIsRunning = (bool) $holder->isactive();
+    } elseif (method_exists($holder, 'getVar')) {
+        $holderIsRunning = 1 === (int) $holder->getVar('isactive');
+    } else {
+        $holderIsRunning = true;
+    }
 
     if ($holderIsRunning) {
         $safeHeld = htmlspecialchars($held, ENT_QUOTES);

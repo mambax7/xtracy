@@ -15,7 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ## [1.0.0-Beta1] - 2026-08-08
 
 First release. xTracy hands PHP's error and exception handlers to
-[nette/tracy](https://tracy.nette.org/) through the error-screen provider seam introduced
+[tracy/tracy](https://tracy.nette.org/) through the error-screen provider seam introduced
 in XOOPS 2.7.3.
 
 Before that seam existed, Tracy was activated by the core itself — roughly 190 lines of

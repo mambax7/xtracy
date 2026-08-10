@@ -2,7 +2,7 @@
 
 <h5>1.0.0-Beta1 [2026-08-08]</h5>  Dev: XOOPS 2.7.3, PHP 8.5
 <hr>
-First release. xTracy hands PHP's error and exception handlers to nette/tracy through the error-screen provider seam introduced in XOOPS 2.7.3. Before that seam existed, Tracy was activated by the core itself - roughly 190 lines naming a third-party library, shipped to every XOOPS install whether or not the site owner had ever heard of it. This module is where that code belongs.
+First release. xTracy hands PHP's error and exception handlers to tracy/tracy through the error-screen provider seam introduced in XOOPS 2.7.3. Before that seam existed, Tracy was activated by the core itself - roughly 190 lines naming a third-party library, shipped to every XOOPS install whether or not the site owner had ever heard of it. This module is where that code belongs.
 
 <strong>Added</strong>
 - Answers core.debug.errorscreen for the owner token "xtracy", the module's own dirname, so 'error_screen' => 'xtracy' names the directory to go and look in. The older spelling "tracy" from 2.7.3 development builds is still answered.

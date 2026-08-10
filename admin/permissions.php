@@ -30,9 +30,14 @@ $moduleAdmin->displayNavigation('permissions.php');
 $helper = Helper::getHelper('xtracy');
 $permHelper = new Permission();
 if ($permHelper) {
-    // this is the name and item we are going to work with
-    $permissionName = 'use_xtracy';
-    $permissionItemId = 0;
+    // The same permission the preload enforces; reused so the two never drift. The preload
+    // class is loaded at boot; fall back to the literals only on the off chance it is not.
+    $permissionName = class_exists('XtracyCorePreload')
+        ? \XtracyCorePreload::PERMISSION_NAME
+        : 'use_xtracy';
+    $permissionItemId = class_exists('XtracyCorePreload')
+        ? \XtracyCorePreload::PERMISSION_ITEM_ID
+        : 0;
 
     // if this is a post operation get our variables
     if ('POST' === Request::getMethod()) {
@@ -48,9 +53,15 @@ if ($permHelper) {
             $groups = (array) $groups;
         }
 
-        // Save the permission for the item
-        $permHelper->savePermissionForItem($permissionName, $permissionItemId, $groups);
-        xoops_result(_MA_XTRACY_FORM_PROCESSED, _MA_XTRACY_PERMISSION_FORM);
+        // Save the permission, then Post/Redirect/Get: check the result, and redirect back
+        // to the form on success so a refresh cannot resubmit and a failed save is not
+        // reported as a success. Rendering straight after the POST did both.
+        $saved = $permHelper->savePermissionForItem($permissionName, $permissionItemId, $groups);
+        redirect_header(
+            'permissions.php',
+            2,
+            $saved ? _MA_XTRACY_FORM_PROCESSED : _MA_XTRACY_PERMISSION_FORM
+        );
     }
     $form = new XoopsThemeForm(_MA_XTRACY_PERMISSION_FORM, 'form', '', 'POST', true);
     $permElement = $permHelper->getGroupSelectFormForItem(
