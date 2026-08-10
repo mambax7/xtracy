@@ -20,3 +20,4 @@ define('_MA_XTRACY_PERMISSION_FORM', 'xTracy Usage Permissions');
 define('_MA_XTRACY_PERMISSION_GROUPS', 'Select groups that may use xTracy');
 define('_MA_XTRACY_FORM_SUBMIT', 'Save');
 define('_MA_XTRACY_FORM_PROCESSED', 'Permissions updated.');
+define('_MA_XTRACY_PERMISSION_SAVE_FAILED', 'The permissions could not be saved. Please try again.');

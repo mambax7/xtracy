@@ -128,7 +128,7 @@ every request — `XOOPS_ERROR_SCREEN_OWNER`, `_SOURCE`, `_STATUS` and `_MESSAGE
 | `active` | Tracy is running |
 | `dormant` | recorded as owner, but `debug.php` is absent or disabled |
 | `disabled` | the module ran and chose not to register — the message says why |
-| `missing` | `tracy/tracy` is not installed |
+| `missing` | `'enabled' => true` is set but `tracy/tracy` is not installed (or cannot be loaded); in the default automatic mode an absent library reports `disabled` |
 | `incompatible` | the installed Tracy build cannot load on this PHP version |
 | `unclaimed` | the configured owner is not an active module |
 | `core` | nothing owns the screen; XoopsLogger has the handlers |

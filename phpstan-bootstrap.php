@@ -25,4 +25,16 @@ if (! defined('_CHARSET')) {
     define('_CHARSET', 'utf-8');
 }
 
+// The module's own language constants (_MI_*, _MA_*). The files are pure define()
+// lists, so loading them lets analysis resolve every constant to a real string --
+// and catch a mistyped constant name -- instead of baselining each one as unknown.
+// index.php is the anti-indexing stub (it calls exit) and must not be loaded.
+$xoopsLanguageFiles = glob(__DIR__ . '/language/english/*.php');
+foreach (false === $xoopsLanguageFiles ? [] : $xoopsLanguageFiles as $xoopsLanguageFile) {
+    if ('index.php' !== basename($xoopsLanguageFile)) {
+        require_once $xoopsLanguageFile;
+    }
+}
+unset($xoopsLanguageFile, $xoopsLanguageFiles);
+
 // Profile target: XoopsCore27 / PHP 8.2+

@@ -31,7 +31,13 @@ function xtracy_grant_permission_to_admins($dirname, $onlyIfEmpty = false): void
     $permission = new \Xmf\Module\Helper\Permission((string) $dirname);
     $adminGroup = defined('XOOPS_GROUP_ADMIN') ? (int) constant('XOOPS_GROUP_ADMIN') : 1;
 
-    if ($onlyIfEmpty && method_exists($permission, 'getGroupsForItem')) {
+    if ($onlyIfEmpty) {
+        // Fail CLOSED: when the existing assignment cannot be read, skip the grant rather
+        // than overwrite it -- savePermissionForItem() replaces the whole group list, so
+        // granting blind here would clobber a site's own narrowing.
+        if (! method_exists($permission, 'getGroupsForItem')) {
+            return;
+        }
         $existing = $permission->getGroupsForItem('use_xtracy', 0);
         if (is_array($existing) && [] !== $existing) {
             return;
@@ -168,18 +174,41 @@ function xoops_module_update_xtracy($module): bool
     if ('' === $held || $held === $dirname) {
         // Free, or already ours. An ordinary claim covers both, and recording again is
         // how a module that was uninstalled-and-reinstalled elsewhere gets the seat back.
-        xoops_recordErrorScreenOwner($dirname);
-        // Re-assert the webmaster grant for a site that installed a version predating it;
-        // only when nothing is set yet, so a site's own narrowing is never clobbered.
-        xtracy_grant_permission_to_admins($dirname, true);
+        if (xoops_recordErrorScreenOwner($dirname)) {
+            // Re-assert the webmaster grant for a site that installed a version predating
+            // it; only when nothing is set yet, so a site's own narrowing is never
+            // clobbered.
+            xtracy_grant_permission_to_admins($dirname, true);
+        } else {
+            $module->setMessage(
+                'WARNING: could not record the error-screen owner. Check that xoops_data/data '
+                . 'is writable and update this module again.'
+            );
+        }
 
         return true;
     }
 
     $holder = null;
+    $lookupPerformed = false;
     $handler = function_exists('xoops_getHandler') ? xoops_getHandler('module') : null;
     if (is_object($handler) && method_exists($handler, 'getByDirname')) {
         $holder = $handler->getByDirname($held);
+        $lookupPerformed = true;
+    }
+
+    if (! $lookupPerformed) {
+        // Fail CLOSED here too: without the module handler the holder's state cannot be
+        // inspected, and a holder of unknown state must be presumed running. A null
+        // $holder means "absent" only after a lookup that actually happened.
+        $module->setMessage(
+            "WARNING: the module handler is unavailable, so the state of '"
+            . htmlspecialchars($held, ENT_QUOTES) . "' could not be inspected and the "
+            . 'error screen was not transferred. Update this module again from a fully '
+            . 'booted admin session.'
+        );
+
+        return true;
     }
 
     // Fail CLOSED: an object we cannot read the state of is treated as ACTIVE, so a

@@ -40,7 +40,8 @@ that wants Tracy installs it, and a site that does not carries none of it.
   and then claims deliberately.
 - Reports its outcome to core in every branch, including the branches where it decides
   **not** to register: `active`, `disabled` with the reason, `missing` when `tracy/tracy`
-  is not installed, `incompatible` when the installed build cannot load on this PHP, and
+  is explicitly enabled but not installed or not loadable (automatic mode reports an
+  absent library as `disabled`), `incompatible` when the installed build cannot load on this PHP, and
   `error` if Tracy throws while starting. Core publishes it as
   `XOOPS_ERROR_SCREEN_STATUS` / `_MESSAGE`. A provider that registers silently is worse
   than one that does nothing: the site's own diagnostics would then describe a screen

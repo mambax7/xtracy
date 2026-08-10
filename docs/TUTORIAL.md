@@ -131,8 +131,9 @@ bdump($someArray, 'what the handler received');
 ```
 
 `dump()` writes inline where it is called. Both are Tracy functions and are available once
-Tracy is active; guard them with `function_exists('bdump')` if the code might run on a site
-where it is not.
+Tracy is active; if the code might run on a site where it is not, guard each call with its
+own check — `function_exists('bdump')` for `bdump()`, `function_exists('dump')` for
+`dump()` — since guarding one says nothing about the other.
 
 ---
 
@@ -162,7 +163,9 @@ What the statuses mean:
 - **`disabled`** — the module ran and chose not to register. The message says which reason:
   the request is not from an authenticated webmaster, the `use_xtracy` permission is not
   granted, or Tracy was switched off for this installation.
-- **`missing`** — `tracy/tracy` is not installed where the module looks. Step 1.
+- **`missing`** — `'enabled' => true` is set but `tracy/tracy` is not installed where the
+  module looks (or is present but could not be loaded). Step 1. In the default automatic
+  mode an absent library reports `disabled` instead, since nothing was promised.
 - **`incompatible`** — the installed Tracy build uses a `#[\Deprecated]` attribute on a
   property, which PHP 8.4 and later reject outright. Update Tracy.
 - **`unclaimed`** — the configured owner is not an active module. Usually it was
@@ -215,6 +218,11 @@ Any of these, in increasing order of permanence:
 
 Deactivating does **not** release the recorded ownership — switch it back on and your setup
 is as you left it. Uninstalling does release it.
+
+One caveat: the uninstall can succeed while the release fails, when the runtime data
+directory is not writable. The uninstaller says so in a warning. If that happens, make
+`xoops_data/data` writable and remove the `error_screen_owner` entry from
+`xoops_data/data/debug-runtime.json` by hand (or reinstall and uninstall again).
 
 ---
 

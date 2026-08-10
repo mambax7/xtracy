@@ -16,7 +16,7 @@
     </p>
 
     <h4 class="odd">REQUIREMENTS</h4> <br>
-    <p class="even">
+    <div class="even">
     <ul>
         <li>XOOPS <strong>2.7.3</strong> or later. This is a hard requirement, not a
             recommendation: the whole module is an answer to the core's
@@ -26,11 +26,11 @@
         <li>PHP 8.2 or later.</li>
         <li>The Tracy library, which the module does not ship.</li>
     </ul>
-    </p>
+    </div>
 
     <h4 class="odd">INSTALL/UNINSTALL</h4>
 
-    <p>
+    <div class="even">
         <br> <br> To add <strong>xTracy</strong> to your XOOPS 2.7.3+ site, follow these steps<br> <br>
 
     <ul>
@@ -50,11 +50,11 @@
     <br> <br>
         Detailed instructions on installing modules are available in the
         <a href="https://xoops.gitbook.io/xoops-operations-guide/" target="_blank">Chapter 2.12 of our XOOPS Operations Manual</a>
-    </p>
+    </div>
     <br> <br>
 
     <h4 class="odd">SWITCHING IT ON</h4> <br>
-    <p class="even">
+    <div class="even">
     <p>
         Installing the module is normally the whole configuration. XOOPS ships
         <code>'error_screen' =&gt; 'auto'</code>, which means "the first error-screen module
@@ -94,10 +94,10 @@
         If the DebugBar module is installed it offers a one-click "Turn Tracy toolbar
         ON/OFF" button, which flips the same switch without editing the file.
     </p>
-    </p>
+    </div>
 
     <h4 class="odd">OPERATING INSTRUCTIONS</h4><br>
-    <p class="even">
+    <div class="even">
     <p>
         When an uncaught error occurs, Tracy replaces the page with its BlueScreen, which
         has four regions:
@@ -121,12 +121,16 @@
         leaving you guessing: XOOPS publishes <code>XOOPS_ERROR_SCREEN_STATUS</code> and
         <code>XOOPS_ERROR_SCREEN_MESSAGE</code> on every request, with values such as
         <code>active</code>, <code>dormant</code>, <code>disabled</code>,
-        <code>missing</code> (the library is not installed), <code>incompatible</code> (the
+        <code>missing</code> (the library is explicitly enabled but not installed, or could
+        not be loaded — with the default automatic mode an absent library reports
+        <code>disabled</code>), <code>incompatible</code> (the
         installed Tracy build cannot load on this PHP version) or <code>unclaimed</code>
         (the configured owner is not an active module).
     </p>
+    <p>
         Detailed instructions on configuring the access rights for user groups are available in the
         <a href="https://xoops.gitbook.io/xoops-operations-guide/" target="_blank">Chapter 2.8 of our XOOPS Operations Manual</a><br> <br></p>
+    </div>
 
     <h4 class="odd">TUTORIAL</h4> <br>
 
@@ -144,7 +148,7 @@
 
     <h4 class="odd">SUPPORT</h4> <br>
     <p class="even">
-        If you have questions about this module and need help, you can visit our <a href="https://xoops.org/modules/newbb/viewforum.php?forum=28/" target="_blank">Support Forums on XOOPS Website</a></p>
+        If you have questions about this module and need help, you can visit our <a href="https://xoops.org/modules/newbb/viewforum.php?forum=28" target="_blank">Support Forums on XOOPS Website</a></p>
 
     <h4 class="odd">DEVELOPMENT</h4> <br>
     <p class="even">

@@ -37,24 +37,6 @@ parameters:
 			path: admin/menu.php
 
 		-
-			message: '#^Constant _MI_XTRACY_ABOUT not found\.$#'
-			identifier: constant.notFound
-			count: 1
-			path: admin/menu.php
-
-		-
-			message: '#^Constant _MI_XTRACY_HOME not found\.$#'
-			identifier: constant.notFound
-			count: 1
-			path: admin/menu.php
-
-		-
-			message: '#^Constant _MI_XTRACY_PERMISSIONS not found\.$#'
-			identifier: constant.notFound
-			count: 1
-			path: admin/menu.php
-
-		-
 			message: '#^Call to method addElement\(\) on an unknown class XoopsThemeForm\.$#'
 			identifier: class.notFound
 			count: 2
@@ -87,30 +69,6 @@ parameters:
 		-
 			message: '#^Call to static method getInstance\(\) on an unknown class Xmf\\Module\\Admin\.$#'
 			identifier: class.notFound
-			count: 1
-			path: admin/permissions.php
-
-		-
-			message: '#^Constant _MA_XTRACY_FORM_PROCESSED not found\.$#'
-			identifier: constant.notFound
-			count: 1
-			path: admin/permissions.php
-
-		-
-			message: '#^Constant _MA_XTRACY_FORM_SUBMIT not found\.$#'
-			identifier: constant.notFound
-			count: 1
-			path: admin/permissions.php
-
-		-
-			message: '#^Constant _MA_XTRACY_PERMISSION_FORM not found\.$#'
-			identifier: constant.notFound
-			count: 2
-			path: admin/permissions.php
-
-		-
-			message: '#^Constant _MA_XTRACY_PERMISSION_GROUPS not found\.$#'
-			identifier: constant.notFound
 			count: 1
 			path: admin/permissions.php
 
@@ -155,39 +113,3 @@ parameters:
 			identifier: missingType.iterableValue
 			count: 1
 			path: preloads/core.php
-
-		-
-			message: '#^Constant _MI_XTRACY_DESC not found\.$#'
-			identifier: constant.notFound
-			count: 1
-			path: xoops_version.php
-
-		-
-			message: '#^Constant _MI_XTRACY_DISCLAIMER not found\.$#'
-			identifier: constant.notFound
-			count: 1
-			path: xoops_version.php
-
-		-
-			message: '#^Constant _MI_XTRACY_LICENSE not found\.$#'
-			identifier: constant.notFound
-			count: 1
-			path: xoops_version.php
-
-		-
-			message: '#^Constant _MI_XTRACY_NAME not found\.$#'
-			identifier: constant.notFound
-			count: 1
-			path: xoops_version.php
-
-		-
-			message: '#^Constant _MI_XTRACY_OVERVIEW not found\.$#'
-			identifier: constant.notFound
-			count: 1
-			path: xoops_version.php
-
-		-
-			message: '#^Constant _MI_XTRACY_SUPPORT not found\.$#'
-			identifier: constant.notFound
-			count: 1
-			path: xoops_version.php

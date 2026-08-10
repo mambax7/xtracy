@@ -60,7 +60,7 @@ if ($permHelper) {
         redirect_header(
             'permissions.php',
             2,
-            $saved ? _MA_XTRACY_FORM_PROCESSED : _MA_XTRACY_PERMISSION_FORM
+            $saved ? _MA_XTRACY_FORM_PROCESSED : _MA_XTRACY_PERMISSION_SAVE_FAILED
         );
     }
     $form = new XoopsThemeForm(_MA_XTRACY_PERMISSION_FORM, 'form', '', 'POST', true);

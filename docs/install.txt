@@ -120,6 +120,11 @@ UNINSTALLING
   Uninstall from Administration -> Modules.  That releases the recorded
   ownership; the site falls back to core error handling.
 
+  If xoops_data/data is not writable, the uninstall still succeeds but the
+  release fails, and the uninstaller warns about it.  In that case make the
+  directory writable and remove the error_screen_owner entry from
+  xoops_data/data/debug-runtime.json by hand.
+
   Deactivating does NOT release it, on purpose: a module switched off for an
   afternoon should find its setup intact when it is switched back on.  While it
   is off the status reads 'unclaimed', and no other installed provider is
